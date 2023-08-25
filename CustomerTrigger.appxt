@@ -1,0 +1,4 @@
+trigger CustomerTrigger on Customer_Object__c(After Insert){
+    CustomerTriggerHandler objCustomerTriggerHandler=new CustomerTriggerHandler();
+    objCustomerTriggerHandler.doAction();
+}
