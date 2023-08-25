@@ -1,0 +1,75 @@
+public class CustomerTriggerHandler{
+    List<Customer_Object__c> triggerNew;
+    List<Customer_Object__c> triggerOld;
+    Map<Id,Customer_Object__c> triggerNewMap;
+    Map<Id,Customer_Object__c> triggerOldMap;
+    
+    public CustomerTriggerHandler(){
+        triggerNew=(List<Customer_Object__c>)Trigger.new;
+        triggerOld=(List<Customer_Object__c>)Trigger.old;
+        triggerNewMap=(Map<Id,Customer_Object__c>)Trigger.newMap;
+        triggerOldMap=(Map<Id,Customer_Object__c>)Trigger.oldMap;
+    }
+    public void doAction(){
+        Switch on Trigger.operationType{
+            when BEFORE_INSERT{
+                
+            }
+            when AFTER_INSERT{
+                onAfterInsert();
+            }
+            when BEFORE_UPDATE{
+                
+            }
+            when AFTER_UPDATE{
+                
+            }
+            when BEFORE_DELETE{
+                
+            }
+            when AFTER_DELETE{
+                
+            }
+            when AFTER_UNDELETE{
+                
+            }
+        }
+    }
+    public void onBeforeInsert(){
+        
+    }
+    public void onAfterInsert(){
+       Set<Id> AccId=new Set<Id>();
+	   for(Customer_Object__c customerRecord:triggerNew){
+			AccId.add(customerRecord.Account_Record__c);
+	
+	   }
+	   
+	   List<Customer_Object__c> customerList=[Select Account_Record__c,Account_Manager__c from Customer_Object__c where Account_Record__c in : AccId];
+	   List<AccountTeamMember> accTeamMember=new List<AccountTeamMember>();
+	   for(Customer_Object__c record:customerList){
+			if(record.Account_Manager__c != null){
+				AccountTeamMember atm=new AccountTeamMember();
+				atm.UserId=record.Account_Manager__c;
+				atm.TeamMemberRole='Sales Manager';
+				atm.AccountId=record.Account_Record__c;
+				accTeamMember.add(atm);
+			}
+	   }
+	   insert accTeamMember;
+    }
+    public void onBeforeUpdate(){
+       
+  
+    }
+    public void onAfterUpdate(){
+        
+    }
+    
+    public void onBeforeDelete(){
+        
+    }
+    public void onAfterUnDelete(){
+    
+	}
+}
